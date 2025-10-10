@@ -26,6 +26,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/aqora-io/scaleway-kapsule-gvisor
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
