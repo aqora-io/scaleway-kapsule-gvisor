@@ -4,5 +4,7 @@ metadata:
   name: gvisor
 handler: runsc
 scheduling:
+  {{- with .Values.nodeSelector }}
   nodeSelector:
-    k8s.scaleway.com/gvisor: "enabled"
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
