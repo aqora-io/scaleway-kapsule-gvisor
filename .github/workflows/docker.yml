@@ -7,12 +7,6 @@ on:
     paths:
       - "docker/**"
 
-env:
-  REGISTRY: ghcr.io
-  REPO: "${{ github.event.repository.name }}"
-  OWNER: "${{ github.repository_owner }}"
-  TAG: "${{ github.sha }}"
-
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
@@ -23,9 +17,6 @@ jobs:
 
     steps:
       - name: Build image tag
-        run: |
-          echo "IMAGE_TAG=${REGISTRY}/${OWNER,,}/${REPO,,}:${TAG}" >>${GITHUB_ENV}
-          echo "IMAGE_LATEST=${REGISTRY}/${OWNER,,}/${REPO,,}:latest" >>${GITHUB_ENV}
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Set up QEMU
@@ -35,21 +26,15 @@ jobs:
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
-          registry: ${{ env.REGISTRY }}
+          registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
+      - name: Build and push
+        uses: docker/build-push-action@v6
         with:
           context: docker
-          provenance: false
-          push: true
-          tags: |
-            ${{ env.IMAGE_TAG }}
-            ${{ env.IMAGE_LATEST }}
-          labels: |
-            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          platforms: |
-            linux/amd64
