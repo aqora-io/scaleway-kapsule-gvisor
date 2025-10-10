@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - master
-    paths:
-      - "docker/**"
 
 jobs:
   build-and-push-image:
