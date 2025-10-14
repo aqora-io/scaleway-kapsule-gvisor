@@ -1,38 +1,29 @@
-scaleway-kapsule-gvisor
-=======================
+# scaleway-kapsule-gvisor
 
 To allow customers managing by themselves gVisor version and config on Kapsule, we don't provide anymore gVisor installed by default on Kapsule nodes.
 
 This repository, inspired from this [method](https://github.com/neumanndaniel/kubernetes/tree/master/gvisor) allow adding back gVisor on specific nodes.
 
-pre-requisite
--------------
+## Pre-requisite
 
-Target nodes must be in Node pools with this specific tags `gvisor=enabled` and `taint=gvisor=enabled:NoSchedule` to be labeled and tainted correctly.
+Target nodes must be in Node pools with this specific tags `gvisor=enabled` and `taint=gvisor=enabled:NoSchedule` to be labeled and tainted correctly. See [the docs on Scaleway](https://www.scaleway.com/en/docs/kubernetes/api-cli/managing-tags/) for more information.
 
-installation
-------------
+## Installation
 
-Run the Daemonset with the associated nodeSelector.
+Install the helm chart
 
-```
-kubectl apply -f install.yaml
-```
-
-Create the RuntimeClass.
-
-```
-kubectl apply -f runtime.yaml
+```bash
+helm repo add scaleway-kapsule-gvisor https://aqora-io.github.io/scaleway-kapsule-gvisor
+helm install install-gvisor scaleway-kapsule-gvisor/install-gvisor --namespace kube-system
 ```
 
-Run test
+You can run a test with the following
 
-```
+```bash
 kubectl apply -f test.yaml
 ```
 
-warning
--------
+## Warning
 
 This method will install gVisor on selected nodes using a Daemonset. The associated pod execute a restart of containerd if needed which may affect other pods on the nodes.
 
@@ -40,8 +31,7 @@ Also, the containerd original `config.toml` file is overwritten with the one pro
 
 gVisor will leverage systemd-cgroups using the experimental flag provided in `runsc.toml`
 
-support
--------
+## Support
 
 This method is provided as-is and nodes with configuration modified fall outside of the responsability matrix of Scaleway managed Kubernetes. To use it, you need to understand the inner working of containerd runtimes with kubernetes to be able to debug any problem.
 
