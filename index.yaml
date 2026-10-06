@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   install-gvisor:
   - apiVersion: v2
+    appVersion: 0.1.1
+    created: "2026-10-06T13:37:58.6466082Z"
+    description: A Helm chart for Kubernetes
+    digest: fa720bfa6a8d1c475767dbfbd9796add4d395f68f42804b2212b5e5fff5f01e6
+    name: install-gvisor
+    type: application
+    urls:
+    - https://github.com/aqora-io/scaleway-kapsule-gvisor/releases/download/install-gvisor-0.1.1/install-gvisor-0.1.1.tgz
+    version: 0.1.1
+  - apiVersion: v2
     appVersion: 0.1.0
     created: "2025-10-14T09:01:41.045544631Z"
     description: A Helm chart for Kubernetes
@@ -11,4 +21,4 @@ entries:
     urls:
     - https://github.com/aqora-io/scaleway-kapsule-gvisor/releases/download/install-gvisor-0.1.0/install-gvisor-0.1.0.tgz
     version: 0.1.0
-generated: "2025-10-14T09:01:41.0455495Z"
+generated: "2026-10-06T13:37:58.646616225Z"
