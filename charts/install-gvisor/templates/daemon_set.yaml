@@ -29,6 +29,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
+            - name: GVISOR_VERSION
+              value: {{ .Values.gvisorVersion | quote }}
           securityContext:
             privileged: true
             readOnlyRootFilesystem: true

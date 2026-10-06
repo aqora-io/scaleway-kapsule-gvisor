@@ -12,6 +12,11 @@ image:
 
 # This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []
+
+# gVisor release to install (https://storage.googleapis.com/gvisor/releases/release/<version>/).
+# Must ship the runsc and containerd-shim-runsc-v1 binaries: releases from 20260831 on only ship a tarball.
+gvisorVersion: "20260817.0"
+
 # This is to override the chart name.
 nameOverride: ""
 fullnameOverride: ""

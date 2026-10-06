@@ -1,5 +1,7 @@
 #!/bin/sh
 
+set -e
+
 cp config.toml /k8s-node
 cp runsc.toml /k8s-node
 cp install-gvisor.sh /k8s-node

@@ -1,14 +1,16 @@
 #!/bin/bash
 
 NEED_RESTART=0
+GVISOR_VERSION=${GVISOR_VERSION:?GVISOR_VERSION must be set}
 
 Install() {
   # From official installation procedure https://gvisor.dev/docs/user_guide/install/
-  echo "=== Installing gVisor binaries ==="
+  # Releases from 20260831 on only ship a tarball, so pin a release that still has the binaries
+  echo "=== Installing gVisor ${GVISOR_VERSION} binaries ==="
   (
     set -e
     ARCH=$(uname -m)
-    URL=https://storage.googleapis.com/gvisor/releases/release/latest/${ARCH}
+    URL=https://storage.googleapis.com/gvisor/releases/release/${GVISOR_VERSION}/${ARCH}
     wget ${URL}/runsc ${URL}/runsc.sha512 \
       ${URL}/containerd-shim-runsc-v1 ${URL}/containerd-shim-runsc-v1.sha512
     sha512sum -c runsc.sha512 \
@@ -16,8 +18,8 @@ Install() {
     rm -f *.sha512
     chmod a+rx runsc containerd-shim-runsc-v1
     sudo mv runsc containerd-shim-runsc-v1 /usr/local/bin
-    NEED_RESTART=1
-  )
+  ) || return 1
+  NEED_RESTART=1
 }
 
 Config() {
@@ -39,7 +41,7 @@ Main() {
 
   # Check if binary present, install otherwise
   if [[ ! -f  /usr/local/bin/runsc || ! -f /usr/local/bin/containerd-shim-runsc-v1 ]]; then
-    Install
+    Install || { echo "=== Failed to install gVisor ${GVISOR_VERSION} ==="; exit 1; }
   fi
 
   # Check if containerd config is the one provided, configure otherwise
