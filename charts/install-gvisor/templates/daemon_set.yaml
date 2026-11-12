@@ -34,6 +34,17 @@ spec:
           securityContext:
             privileged: true
             readOnlyRootFilesystem: true
+          # Kapsule node upgrades reinstall containerd and re-render its config.toml without runsc.
+          # Failing here makes the kubelet restart this container, so run.sh re-applies the config.
+          livenessProbe:
+            {{- include "install-gvisor.installedProbe" . | nindent 12 }}
+            periodSeconds: 30
+            failureThreshold: 2
+          # Gives the first install (downloads + containerd restart) up to 5 minutes before liveness applies.
+          startupProbe:
+            {{- include "install-gvisor.installedProbe" . | nindent 12 }}
+            periodSeconds: 10
+            failureThreshold: 30
           volumeMounts:
             - name: k8s-node
               mountPath: /k8s-node

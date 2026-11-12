@@ -43,6 +43,24 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
 {{/*
+Probe that fails while the gVisor binaries or the containerd config applied by run.sh are missing or have drifted
+*/}}
+{{- define "install-gvisor.installedProbe" -}}
+exec:
+  command:
+    - /usr/bin/nsenter
+    - -m/proc/1/ns/mnt
+    - --
+    - sh
+    - -c
+    - >-
+      test -f /usr/local/bin/runsc &&
+      test -f /usr/local/bin/containerd-shim-runsc-v1 &&
+      diff /tmp/gvisor/config.toml /etc/containerd/config.toml >/dev/null
+timeoutSeconds: 10
+{{- end }}
+
+{{/*
 Selector labels
 */}}
 {{- define "install-gvisor.selectorLabels" -}}

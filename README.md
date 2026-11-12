@@ -29,6 +29,8 @@ This method will install gVisor on selected nodes using a Daemonset. The associa
 
 Also, the containerd original `config.toml` file is overwritten with the one provided. This config is valid at the current time but may not take into account future parameters added by the Kapsule team. In any case, the config file now leverage `version = 2` to be able to use the `ConfigPath` option which is not the case for the original configuration.
 
+Kapsule node upgrades reinstall containerd and re-render its `config.toml`, which removes the gVisor runtime. A liveness probe detects this (or missing gVisor binaries) and restarts the pod, which re-applies the config and restarts containerd again.
+
 gVisor will leverage systemd-cgroups using the experimental flag provided in `runsc.toml`
 
 ## Support
